@@ -49,7 +49,15 @@ int main()
     Column1.calculateDeviations();
     Column1.calculateStandardDeviation();
     outputFile << Column1.getMean() << "\n";
-    another_output << Column1.getStandardDeviation() << "\n";
+    another_output << Column1.getStandardDeviation() << "\t";
+    double g = 0;
+    double t = 0;
+    t = Column1.getMean()/1000;
+    g = 2 * (0.272 - 1.050 * t) / (pow(t,2));
+    double deltaG = 0;
+    deltaG = sqrt(pow(2*0.001/pow(t,2),2)/9+pow((-4*0.272/pow(t, 3)+2*0.005/pow(t, 2))*Column1.getStandardDeviation()/1000, 2) + pow(-2*0.005/t, 2) / 9);
+    another_output << g << " " << deltaG << "\n";
+
 
     DataProcessor Column2("Br.txt");
     Column2.calculateMean();
