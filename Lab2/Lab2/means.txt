@@ -1,0 +1,6 @@
+151.973
+-nan(ind)
+-nan(ind)
+-nan(ind)
+-nan(ind)
+-nan(ind)
