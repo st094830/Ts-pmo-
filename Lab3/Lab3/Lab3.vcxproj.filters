@@ -19,4 +19,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Header.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Vert.txt" />
+    <Text Include="Horus.txt" />
+    <Text Include="Maxx.txt" />
+    <Text Include="Sensitivity.txt" />
+  </ItemGroup>
 </Project>
