@@ -11,7 +11,7 @@
 class DataProcessor {
 public:
     DataProcessor(const std::string& inputFileName);
-
+    ~DataProcessor() {};
     void readData();
     void calculateMean();
     void calculateDeviations();
@@ -24,6 +24,9 @@ public:
     const std::vector<double>& getDeviations() const;
     const std::vector<double>& getSquaredDeviations() const;
     double getMean() const;
+    void calculateAccelerationDeviation();
+    double getAccel() const;
+    double getAccelDeviation() const;
 
 private:
     std::string inputFileName;
@@ -35,6 +38,8 @@ private:
     double maxDelta;
     double standardDeviation;
     double meanError;
+    double g = 0;
+    double deltaG = 0;
 };
 
 
@@ -49,45 +54,66 @@ int main()
     Column1.calculateDeviations();
     Column1.calculateStandardDeviation();
     outputFile << Column1.getMean() << "\n";
-    another_output << Column1.getStandardDeviation() << "\t";
-    double g = 0;
-    double t = 0;
-    t = Column1.getMean()/1000;
-    g = 2 * (0.272 - 1.050 * t) / (pow(t,2));
-    double deltaG = 0;
-    deltaG = sqrt(pow(2*0.001/pow(t,2),2)/9+pow((-4*0.272/pow(t, 3)+2*0.005/pow(t, 2))*Column1.getStandardDeviation()/1000, 2) + pow(-2*0.005/t, 2) / 9);
-    another_output << g << " " << deltaG << "\n";
-
+    another_output << Column1.getStandardDeviation() << "\n";
+    Column1.calculateAccelerationDeviation();
+    another_output << Column1.getAccel() << " " << Column1.getAccelDeviation() << "\n \n";
+    Column1.~DataProcessor();
 
     DataProcessor Column2("Br.txt");
+    Column2.readData();
     Column2.calculateMean();
+    Column2.calculateDeviations();
     Column2.calculateStandardDeviation();
     outputFile << Column2.getMean() << "\n";
     another_output << Column2.getStandardDeviation() << "\n";
+    Column2.calculateAccelerationDeviation();
+    another_output << Column2.getAccel() << " " << Column2.getAccelDeviation() << "\n \n";
+    Column2.~DataProcessor();
 
     DataProcessor Column3("St.txt");
+    Column3.readData();
     Column3.calculateMean();
+    Column3.calculateDeviations();
     Column3.calculateStandardDeviation();
     outputFile << Column3.getMean() << "\n";
     another_output << Column3.getStandardDeviation() << "\n";
+    Column3.calculateAccelerationDeviation();
+    another_output << Column3.getAccel() << " " << Column3.getAccelDeviation() << "\n \n";
+    Column3.~DataProcessor();
 
     DataProcessor Column4("Wd.txt");
+    Column4.readData();
     Column4.calculateMean();
+    Column4.calculateDeviations();
     Column4.calculateStandardDeviation();
     outputFile << Column4.getMean() << "\n";
     another_output << Column4.getStandardDeviation() << "\n";
+    Column4.calculateAccelerationDeviation();
+    another_output << Column4.getAccel() << " " << Column4.getAccelDeviation() << "\n \n";
+    Column4.~DataProcessor();
 
     DataProcessor Column5("Pl.txt");
+    Column5.readData();
     Column5.calculateMean();
+    Column5.calculateDeviations();
     Column5.calculateStandardDeviation();
     outputFile << Column5.getMean() << "\n";
     another_output << Column5.getStandardDeviation() << "\n";
+    Column5.calculateAccelerationDeviation();
+    another_output << Column5.getAccel() << " " << Column5.getAccelDeviation() << "\n \n";
+    Column5.~DataProcessor();
 
     DataProcessor Column6("Pb.txt");
+    Column6.readData();
     Column6.calculateMean();
+    Column6.calculateDeviations();
     Column6.calculateStandardDeviation();
     outputFile << Column6.getMean() << "\n";
     another_output << Column6.getStandardDeviation() << "\n";
+    Column6.calculateAccelerationDeviation();
+    another_output << Column6.getAccel() << " " << Column6.getAccelDeviation() << "\n \n";
+    Column6.~DataProcessor();
+    
     outputFile.close();
     another_output.close();
 }

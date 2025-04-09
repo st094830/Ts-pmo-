@@ -90,3 +90,20 @@ const std::vector<double>& DataProcessor::getSquaredDeviations() const {
 double DataProcessor::getMean() const {
     return mean;
 }
+
+void DataProcessor::calculateAccelerationDeviation()
+{
+    double mean_ = mean / 1000;
+    g = 2 * (0.272 - 1.050 * mean_) / (pow(mean_, 2));
+    deltaG = sqrt(pow(2 * 0.001 / pow(mean_, 2), 2) / 9 + pow((-4 * 0.272 / pow(mean_, 3) + 2 * 0.005 / pow(mean_, 2)) * standardDeviation / 1000, 2) + pow(-2 * 0.005 / mean_, 2) / 9);
+}
+
+double DataProcessor::getAccel() const
+{
+    return g;
+}
+
+double DataProcessor::getAccelDeviation() const
+{
+    return deltaG;
+}
