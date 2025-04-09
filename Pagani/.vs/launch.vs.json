@@ -1,0 +1,12 @@
+{
+  "version": "0.2.1",
+  "defaults": {},
+  "configurations": [
+    {
+      "type": "default",
+      "project": "CMakeLists.txt",
+      "projectTarget": "Pagani.exe (Pagani\\Pagani.exe)",
+      "name": "Pagani.exe (Pagani\\Pagani.exe)"
+    }
+  ]
+}

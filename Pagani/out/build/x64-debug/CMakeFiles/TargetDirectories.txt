@@ -1,0 +1,9 @@
+C:/Users/ivans/OneDrive/Рабочий стол/Subaru/Ts-pmo-/Pagani/out/build/x64-debug/CMakeFiles/package.dir
+C:/Users/ivans/OneDrive/Рабочий стол/Subaru/Ts-pmo-/Pagani/out/build/x64-debug/CMakeFiles/package_source.dir
+C:/Users/ivans/OneDrive/Рабочий стол/Subaru/Ts-pmo-/Pagani/out/build/x64-debug/CMakeFiles/edit_cache.dir
+C:/Users/ivans/OneDrive/Рабочий стол/Subaru/Ts-pmo-/Pagani/out/build/x64-debug/CMakeFiles/rebuild_cache.dir
+C:/Users/ivans/OneDrive/Рабочий стол/Subaru/Ts-pmo-/Pagani/out/build/x64-debug/Pagani/CMakeFiles/Pagani.dir
+C:/Users/ivans/OneDrive/Рабочий стол/Subaru/Ts-pmo-/Pagani/out/build/x64-debug/Pagani/CMakeFiles/package.dir
+C:/Users/ivans/OneDrive/Рабочий стол/Subaru/Ts-pmo-/Pagani/out/build/x64-debug/Pagani/CMakeFiles/package_source.dir
+C:/Users/ivans/OneDrive/Рабочий стол/Subaru/Ts-pmo-/Pagani/out/build/x64-debug/Pagani/CMakeFiles/edit_cache.dir
+C:/Users/ivans/OneDrive/Рабочий стол/Subaru/Ts-pmo-/Pagani/out/build/x64-debug/Pagani/CMakeFiles/rebuild_cache.dir
