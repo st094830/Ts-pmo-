@@ -50,19 +50,23 @@ int main(int argc, char* argv[])
     Vert.readData();
     Horus.readData();
     Maxx.readData();
-    std::vector<double> Senss = Vert.getSensitivity();
+    std::vector<double> SenssV = Vert.getSensitivity();
+    for (int i = 0; i < 5; i++) {
+        outputFile << SenssV[i] << "\n";
+    }
+    outputFile << "\n ______ \n";
+    std::vector<double> SenssH = Horus.getSensitivity();
+    for (int i = 0; i < 5; i++) {
+        outputFile << SenssH[i] << "\n";
+    }
+    outputFile << "\n ______ \n";
+    std::vector<double> Senss = Maxx.getSensitivity();
     for (int i = 0; i < 5; i++) {
         outputFile << Senss[i] << "\n";
     }
-    outputFile << "\n ______ \n";
-    Senss = Horus.getSensitivity();
+    outputFile << "\n \n Max koefficient: \n \n";
     for (int i = 0; i < 5; i++) {
-        outputFile << Senss[i] << "\n";
-    }
-    outputFile << "\n ______ \n";
-    Senss = Maxx.getSensitivity();
-    for (int i = 0; i < 5; i++) {
-        outputFile << Senss[i] << "\n";
+        outputFile << Senss[i]/SenssV[i] << "\n";
     }
 }
 #endif
