@@ -105,6 +105,67 @@ int main(int argc, char* argv[])
     outputFile4 << sum;
     outputFile4.close();
     TgCalculation.~TgCalculation();
+
+
+    std::ofstream outputFile("CurrencyFourDig.txt");
+    DataProcessor TwoDigCB("FourDigCB.txt");
+    FDigCB.readData();
+    std::vector<double> Currencies = FDigCB.getCurrency();
+    for (int i = 0; i < 16; i++)
+    {
+        outputFile << Currencies[i] << "\n";
+    }
+    outputFile.close();
+
+    std::ofstream outputFilef2("LogarithmFDig.txt");
+    FDigCB.readData();
+    FDigCB.calculateMean();
+    double Meow = FDigCB.getMean();
+    std::vector<double> Logarithms = FDigCB.getLogarithm();
+    for (int i = 0; i < 16; i++)
+    {
+        outputFilef2 << Logarithms[i] << "\n";
+    }
+    outputFilef2 << Meow << "\n------";
+    outputFilef2.close();
+    TwoDigCB.~TwoDigCB();
+
+    DataProcessor FDigEB("FDigEB.txt");
+    FDigEB.readData();
+    FDigEB.calculateMean();
+    Meow = FDigEB.getMean();
+    std::vector<double> EBVoltage = FDigEB.getData();
+    DataProcessor FDigLog("LogarithmFDig.txt");
+    FDigLog.readData();
+    std::vector<double> LnCurrency = FDigLog.getData();
+    std::ofstream outputFile3("iterationsF.txt");
+    double sum = 0;
+    for (int i = 0; i < 8; i++)
+    {
+        outputFile3 << (EBVoltage[i + 8] - EBVoltage[i]) / (LnCurrency[i + 8] - LnCurrency[i]) << "\n";
+        sum += (EBVoltage[i + 8] - EBVoltage[i]) / (LnCurrency[i + 8] - LnCurrency[i]);
+    }
+    outputFile3 << sum << "\n---------\n" << Meow << "   srednee Ueb";
+    outputFile3.close();
+    FDigEB.~TwoDigEB();
+    FDigLog.~TwoDigLog();
+
+    std::ofstream outputFile4("iterationsF.txt");
+    DataProcessor TgCalculation("iterationsF.txt");
+    TgCalculation.readData();
+    TgCalculation.calculateMean();
+    TgCalculation.calculateDeviations();
+    std::vector<double> Devs = TgCalculation.getDeviations();
+    std::vector<double> SqrDevs = TgCalculation.getSquaredDeviations();
+    sum = 0;
+    for (int i = 0; i < 8; i++)
+    {
+        outputFile4 << Devs[i] << "  " << SqrDevs[i] << "\n";
+        sum += SqrDevs[i];
+    }
+    outputFile4 << sum;
+    outputFile4.close();
+    TgCalculation.~TgCalculation();
     return 0;
 }
 #endif
