@@ -23,6 +23,9 @@
     <ClCompile Include="Source.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="iterations2.txt">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="CurrencyTwoDig.txt" />
@@ -30,5 +33,6 @@
     <Text Include="LogarithmTwoDig.txt" />
     <Text Include="TwoDigEB.txt" />
     <Text Include="iterations.txt" />
+    <Text Include="tgs.txt" />
   </ItemGroup>
 </Project>

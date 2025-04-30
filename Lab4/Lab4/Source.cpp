@@ -29,12 +29,19 @@ void DataProcessor::calculateMean() {
 void DataProcessor::calculateDeviations() {
     deviations.clear();
     squaredDeviations.clear();
+    standDev = 0;
+    standErr = 0;
+    deltaTg = 0;
 
     for (double val : data) {
         double deviation = val - mean;
         deviations.push_back(deviation);
         squaredDeviations.push_back(deviation * deviation);
+        standDev += deviation * deviation;
     }
+    standDev = sqrt(standDev / (data.size() - 1));
+    standErr = standDev / sqrt(data.size());
+    deltaTg = 2.365 * standErr;
 }
 
 void DataProcessor::calculateAbsoluteErrors() {
@@ -110,4 +117,19 @@ std::vector<double> DataProcessor::getLogarithm()
 std::vector<double> DataProcessor::getData()
 {
     return data;
+}
+
+double DataProcessor::getSDev() const
+{
+    return standDev;
+}
+
+double DataProcessor::getSErr() const
+{
+    return standErr;
+}
+
+double DataProcessor::getDelta() const
+{
+    return deltaTg;
 }

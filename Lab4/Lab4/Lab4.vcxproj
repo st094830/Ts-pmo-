@@ -130,12 +130,14 @@
     <ClInclude Include="Header.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="iterations2.txt" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="CurrencyTwoDig.txt" />
     <Text Include="iterations.txt" />
     <Text Include="LogarithmTwoDig.txt" />
+    <Text Include="tgs.txt" />
     <Text Include="TwoDigCB.txt" />
     <Text Include="TwoDigEB.txt" />
   </ItemGroup>

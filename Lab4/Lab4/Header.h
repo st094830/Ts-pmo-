@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #pragma once
 #ifndef DATAPROC_H
 #define DATAPROC_H
@@ -28,6 +28,9 @@ public:
     std::vector<double> getCurrency();
     std::vector<double> getLogarithm();
     std::vector<double> getData();
+    double getSDev() const;
+    double getSErr() const;
+    double getDelta() const;
 
 private:
     std::string inputFileName;
@@ -41,7 +44,9 @@ private:
     double meanError;
     std::vector<double> currency;
     std::vector<double> currencyLogarithm;
-
+    double standDev;
+    double standErr;
+    double deltaTg;
 };
 
 int main(int argc, char* argv[])
@@ -65,7 +70,6 @@ int main(int argc, char* argv[])
     {
         outputFile2 << Logarithms[i] << "\n";
     }
-    outputFile2 << Meow << "\n------";
     outputFile2.close();
     TwoDigCB.~TwoDigCB();
 
@@ -79,17 +83,17 @@ int main(int argc, char* argv[])
     std::vector<double> LnCurrency = TwoDigLog.getData();
     std::ofstream outputFile3("iterations.txt");
     double sum = 0;
-    for (int i = 0; i < 8; i++) 
+    for (int i = 0; i < 8; ++i) 
     {
         outputFile3 << (EBVoltage[i + 8] - EBVoltage[i]) / (LnCurrency[i + 8] - LnCurrency[i]) << "\n";
         sum += (EBVoltage[i + 8] - EBVoltage[i]) / (LnCurrency[i + 8] - LnCurrency[i]);
     }
-    outputFile3 << sum << "\n---------\n" << Meow << "   srednee Ueb";
     outputFile3.close();
     TwoDigEB.~TwoDigEB();
     TwoDigLog.~TwoDigLog();
+    
 
-    std::ofstream outputFile4("iterations.txt");
+    std::ofstream outputFile4("iterations2.txt");
     DataProcessor TgCalculation("iterations.txt");
     TgCalculation.readData();
     TgCalculation.calculateMean();
@@ -105,6 +109,20 @@ int main(int argc, char* argv[])
     outputFile4 << sum;
     outputFile4.close();
     TgCalculation.~TgCalculation();
+
+
+
+    DataProcessor Tg("iterations.txt");
+    Tg.readData();
+    Tg.calculateMean();
+    Tg.calculateDeviations();
+    std::ofstream Autput("tgs.txt");
+    Autput << Tg.getMean() << "\n" << Tg.getSDev() << "\n" << Tg.getSErr() << "\n" << Tg.getDelta() << "\n";
+
+
+    double temp = 295.15; 
+    Autput << "e/k ratio: " << temp * Tg.getMean() << " ± " << temp * Tg.getDelta() << "\n";
+
     return 0;
 }
 #endif
