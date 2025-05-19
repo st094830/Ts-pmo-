@@ -1,0 +1,4 @@
+﻿  Ants.cpp
+C:\Users\ivans\OneDrive\Рабочий стол\Subaru\Ts-pmo-\Ants\Ants\Ants.cpp(42,46): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\ivans\OneDrive\Рабочий стол\Subaru\Ts-pmo-\Ants\Ants\Ants.cpp(159,18): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  Ants.vcxproj -> C:\Users\ivans\OneDrive\Рабочий стол\Subaru\Ts-pmo-\Ants\x64\Debug\Ants.exe
