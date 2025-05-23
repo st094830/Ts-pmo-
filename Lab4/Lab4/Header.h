@@ -1,6 +1,4 @@
-﻿#pragma once
-#pragma once
-#ifndef DATAPROC_H
+﻿#ifndef DATAPROC_H
 #define DATAPROC_H
 
 #include <vector>
@@ -8,121 +6,166 @@
 #include <cmath>
 #include <fstream>
 #include <iostream>
+#include <algorithm>
+#include <stdexcept>
 
 class DataProcessor {
 public:
-    DataProcessor(const std::string& inputFileName);
-    ~DataProcessor() {};
+    explicit DataProcessor(const std::string& inputFileName = "");
     void readData();
+    void setData(const std::vector<double>& newData);
     void calculateMean();
     void calculateDeviations();
-    void calculateAbsoluteErrors();
     void calculateStandardDeviation();
     void calculateMeanError();
-    double getMaxDelta() const;
+    void processPairPoints(const std::vector<double>& x, const std::vector<double>& y);
+
+    double getMean() const;
     double getStandardDeviation() const;
     double getMeanError() const;
+    const std::vector<double>& getData() const;
     const std::vector<double>& getDeviations() const;
     const std::vector<double>& getSquaredDeviations() const;
-    double getMean() const;
-    std::vector<double> getCurrency();
-    std::vector<double> getLogarithm();
-    std::vector<double> getData();
-    double getSDev() const;
-    double getSErr() const;
-    double getDelta() const;
+    double getSlope() const;
+    double getIntercept() const;
+    double getSlopeStdDev() const;
+    double getInterceptStdDev() const;
+    double getSlopeStdErr() const;
+    double getInterceptStdErr() const;
+    double getSlopeConfidence() const;
+    double getInterceptConfidence() const;
 
 private:
     std::string inputFileName;
     std::vector<double> data;
-    double mean;
+
+    double mean = 0.0;
     std::vector<double> deviations;
     std::vector<double> squaredDeviations;
-    std::vector<double> deltas;
-    double maxDelta;
-    double standardDeviation;
-    double meanError;
-    std::vector<double> currency;
-    std::vector<double> currencyLogarithm;
-    double standDev;
-    double standErr;
-    double deltaTg;
+    double standardDeviation = 0.0;
+    double meanError = 0.0;
+
+    double a_mean = 0.0;
+    double b_mean = 0.0;
+    double a_stddev = 0.0;
+    double b_stddev = 0.0;
+    double a_stderr = 0.0;
+    double b_stderr = 0.0;
+    double a_confidence = 0.0;
+    double b_confidence = 0.0;
 };
 
-int main(int argc, char* argv[])
-{
-    std::ofstream outputFile("CurrencyTwoDig.txt");    
-    DataProcessor TwoDigCB("TwoDigCB.txt");
-    TwoDigCB.readData();
-    std::vector<double> Currencies = TwoDigCB.getCurrency();
-    for (int i = 0; i < 16; i++)
-    {
-        outputFile << Currencies[i] << "\n";
+
+
+int main() {
+    try {
+        std::cout.precision(6);
+        std::cout << std::fixed;
+
+       
+
+
+        DataProcessor ebVoltageData("TwoDigEB.txt");
+        DataProcessor cbVoltageData("TwoDigCB.txt");
+
+        ebVoltageData.readData();
+        cbVoltageData.readData();
+
+
+
+
+
+
+        std::vector<double> currents;
+        const double R3 = 12.0;
+        for (const auto& u_kb : cbVoltageData.getData()) {
+            if (R3 < 1e-10) {  
+                throw std::runtime_error("R3 resistance is too small");
+            }
+            currents.push_back(u_kb / R3);
+        }
+
+      
+
+
+
+        std::vector<double> logCurrents;
+        for (const auto& I_k : currents) {
+            if (I_k <= 0) {  
+                throw std::runtime_error("Current value must be positive for logarithm");
+            }
+            logCurrents.push_back(log(I_k));
+        }
+
+
+
+
+        DataProcessor processor;
+        processor.processPairPoints(ebVoltageData.getData(), logCurrents);
+
+
+
+
+        double temperature = 295.15;
+        double e_over_k = temperature * processor.getSlope();
+        double e_over_k_error = temperature * processor.getSlopeConfidence();
+
+
+
+        double I0 = exp(processor.getIntercept());
+        double I0_error = I0 * processor.getInterceptConfidence();
+
+
+
+        std::ofstream Autput("tgs.txt");
+        Autput << "Linear regression parameters ln(I_k) = a·U_eb + b:\n";
+        Autput << "  Slope (a): " << processor.getSlope()
+            << " ± " << processor.getSlopeConfidence() << " 1/V\n";
+        Autput << "  Intercept (b): " << processor.getIntercept()
+            << " ± " << processor.getInterceptConfidence() << "\n";
+        Autput << "  Temperature (T): " << temperature << " K\n";
+        Autput << "\ne/k RATIO:\n";
+        Autput << "  e/k = T·a = " << e_over_k
+            << " ± " << e_over_k_error << " K/V\n";
+        Autput << "\nSATURATION CURRENT:\n";
+        Autput << "  I0 = exp(b) = " << I0
+            << " ± " << I0_error << " A\n";
+        Autput << "------------------------------------------------\n";
+        Autput.close();
+
+
+
+        std::cout << "Saving graph data to graph_data.txt...\n";
+        std::ofstream graphData("graph_data.txt");
+        if (!graphData) {
+            throw std::runtime_error("Cannot open graph_data.txt for writing");
+        }
+        graphData << "# U_eb[V]\tln(I_k)\tI_k[A]\n";
+        for (size_t i = 0; i < ebVoltageData.getData().size(); ++i) {
+            graphData << ebVoltageData.getData()[i] << "\t"
+                << logCurrents[i] << "\t"
+                << currents[i] << "\n";
+        }
+        graphData.close();
+
+
+
+        std::ofstream params("fit_params.txt");
+        if (!params) {
+            throw std::runtime_error("Cannot open fit_params.txt for writing");
+        }
+        params << "a " << processor.getSlope() << " " << processor.getSlopeConfidence() << "\n";
+        params << "b " << processor.getIntercept() << " " << processor.getInterceptConfidence() << "\n";
+        params << "I0 " << I0 << " " << I0_error << "\n";
+        params << "e_over_k " << e_over_k << " " << e_over_k_error << "\n";
+        params.close();
+
+        std::cout << "Data processing completed successfully!\n";
     }
-    outputFile.close();
-
-    std::ofstream outputFile2("LogarithmTwoDig.txt");
-    TwoDigCB.readData();
-    TwoDigCB.calculateMean();
-    double Meow = TwoDigCB.getMean();
-    std::vector<double> Logarithms = TwoDigCB.getLogarithm();
-    for (int i = 0; i < 16; i++)
-    {
-        outputFile2 << Logarithms[i] << "\n";
+    catch (const std::runtime_error& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        return 1;
     }
-    outputFile2.close();
-    TwoDigCB.~TwoDigCB();
-
-    DataProcessor TwoDigEB("TwoDigEB.txt");
-    TwoDigEB.readData();
-    TwoDigEB.calculateMean();
-    Meow = TwoDigEB.getMean();
-    std::vector<double> EBVoltage = TwoDigEB.getData();
-    DataProcessor TwoDigLog("LogarithmTwoDig.txt");
-    TwoDigLog.readData();
-    std::vector<double> LnCurrency = TwoDigLog.getData();
-    std::ofstream outputFile3("iterations.txt");
-    double sum = 0;
-    for (int i = 0; i < 8; ++i) 
-    {
-        outputFile3 << (EBVoltage[i + 8] - EBVoltage[i]) / (LnCurrency[i + 8] - LnCurrency[i]) << "\n";
-        sum += (EBVoltage[i + 8] - EBVoltage[i]) / (LnCurrency[i + 8] - LnCurrency[i]);
-    }
-    outputFile3.close();
-    TwoDigEB.~TwoDigEB();
-    TwoDigLog.~TwoDigLog();
-    
-
-    std::ofstream outputFile4("iterations2.txt");
-    DataProcessor TgCalculation("iterations.txt");
-    TgCalculation.readData();
-    TgCalculation.calculateMean();
-    TgCalculation.calculateDeviations();
-    std::vector<double> Devs = TgCalculation.getDeviations();
-    std::vector<double> SqrDevs = TgCalculation.getSquaredDeviations();
-    sum = 0;
-    for (int i = 0; i < 8; i++) 
-    {
-        outputFile4 << Devs[i] << "  " << SqrDevs[i] << "\n";
-        sum += SqrDevs[i];
-    }
-    outputFile4 << sum;
-    outputFile4.close();
-    TgCalculation.~TgCalculation();
-
-
-
-    DataProcessor Tg("iterations.txt");
-    Tg.readData();
-    Tg.calculateMean();
-    Tg.calculateDeviations();
-    std::ofstream Autput("tgs.txt");
-    Autput << Tg.getMean() << "\n" << Tg.getSDev() << "\n" << Tg.getSErr() << "\n" << Tg.getDelta() << "\n";
-
-
-    double temp = 295.15; 
-    Autput << "e/k ratio: " << temp * Tg.getMean() << " ± " << temp * Tg.getDelta() << "\n";
-
     return 0;
 }
 #endif
